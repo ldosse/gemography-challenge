@@ -12,6 +12,8 @@ def list_languages(request):
     with following attributes:
     + the number of repos using the language
     + list of repos' urls (api + html urls)
+    I chose to return repo urls instead the entire repos object because the
+    response was too big and ugly
     """
     today = datetime.now()
     thirty_days_ago = (today - timedelta(days=30)).strftime("%Y-%m-%d")
