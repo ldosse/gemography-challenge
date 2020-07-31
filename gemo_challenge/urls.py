@@ -18,6 +18,5 @@ from django.urls import path
 from gemo_challenge.popular_languages import views
 
 urlpatterns = [
-    # path('', include(router.urls)),
     path('list_languages/', views.list_languages),
 ]
