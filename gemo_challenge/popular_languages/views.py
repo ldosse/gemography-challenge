@@ -14,9 +14,26 @@ def list_languages(request):
     + list of repos' urls (api + html urls)
     """
     today = datetime.now()
-
+    thirty_days_ago = (today - timedelta(days=30)).strftime("%Y-%m-%d")
+    # api call to list of 100 trending repositories in GH sorted by stars
+    # in descending order
     url = "https://api.github.com/search/repositories?q=created:>{0}&sort=stars&order=desc&page=1&per_page=100".format(
-        today)
+        thirty_days_ago)
     response = requests.get(url)
+    trending_repositories = response.json()['items']
+    list_languages = {}
+    NO_OF_REPOS = "No of repos"
+    LIST_OF_REPOS = "List of repos"
+    URL = "url"
+    HTML_URL = "html_url"
 
-    return Response(response)
+    for repo in trending_repositories:
+        language = repo['language']
+        prevEntry = list_languages.setdefault(language,
+                                              {NO_OF_REPOS: 0,
+                                               LIST_OF_REPOS: []})
+
+        list_languages[language][NO_OF_REPOS] = prevEntry[NO_OF_REPOS] + 1
+        prevEntry[LIST_OF_REPOS].append({repo[URL], repo[HTML_URL]})
+
+    return Response(list_languages)
